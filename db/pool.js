@@ -1,7 +1,7 @@
 const { Pool } = require("pg");
 
 module.exports = new Pool({
-  connectionString: "postgresql://<role_name>:<role_password>@localhost:5432/top_users"
+  connectionString: "postgresql://<role_name>:<role_password>@localhost:5432/members_only"
 });
 
 // module.exports = new Pool({
