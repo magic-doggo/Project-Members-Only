@@ -1,4 +1,5 @@
 const path = require("node:path");
+const bcrypt = require("bcryptjs");
 // const { Pool } = require("pg");
 const express = require("express");
 const session = require("express-session");
@@ -18,7 +19,47 @@ app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => res.render("index"));
 app.get("/sign-up", (req, res) => res.render("sign-up"));
-app.get("sign-in", (req, res) => res.render("sign-in"));
+app.get("/sign-in", (req, res) => res.render("sign-in", { user: req.user }));
+
+passport.use(
+  new LocalStrategy({
+    usernameField: "email",
+  }, async (username, password, done) => {
+    try {
+      const { rows } = await pool.query("SELECT * FROM Users WHERE email = $1", [username]);
+      const user = rows[0];
+      console.log(user, "user")
+      if (!user) {
+        console.log("no user")
+        return done(null, false, { message: "Incorrect email" });
+      }
+      if (user.password !== password) {
+        console.log("rong pasword")
+        return done(null, false, { message: "Incorrect password" });
+      }
+      return done(null, user);
+    }
+    catch (err) {
+      return done(err);
+    }
+  })
+);
+
+passport.serializeUser((user, done) => {
+  console.log(user.id)
+  done(null, user.id);
+})
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const { rows } = await pool.query("SELECT * FROM Users where id = $1", [id]);
+    const user = rows[0];
+    console.log("deserialize user", user)
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+})
 
 app.post("/sign-up",
   body('password').isLength({ min: 5 }),
@@ -27,10 +68,10 @@ app.post("/sign-up",
   }),
   async (req, res, next) => {
     try {
-      console.log(req.body.password, req.body.confirmPassword),
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
       await pool.query("INSERT INTO Users (email, password, first_name, last_name) VALUES ($1, $2, $3, $4)", [
         req.body.email,
-        req.body.password,
+        hashedPassword,
         req.body.firstName,
         req.body.lastName
       ]);
@@ -38,7 +79,15 @@ app.post("/sign-up",
     } catch (err) {
       return next(err);
     }
+  });
+
+app.post("/sign-in",
+  passport.authenticate("local", {
+    successRedirect: "/sign-in",
+    failureRedirect: "/sign-up"
   })
+)
+
 
 app.listen(3000, (error) => {
   if (error) {
