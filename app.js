@@ -17,9 +17,17 @@ app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/", (req, res) => res.render("index"));
-app.get("/sign-up", (req, res) => res.render("sign-up"));
-app.get("/sign-in", (req, res) => res.render("sign-in", { user: req.user }));
+app.get("/", (req, res) => res.render("index", { user: req.user }));
+app.get("/sign-up", (req, res) => res.render("sign-up", { user: req.user }));
+app.get("/sign-in", (req, res) => {res.render("sign-in", { user: req.user })})
+app.get("/log-out", (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  })
+})
 
 passport.use(
   new LocalStrategy({
@@ -33,8 +41,9 @@ passport.use(
         console.log("no user")
         return done(null, false, { message: "Incorrect email" });
       }
-      if (user.password !== password) {
-        console.log("rong pasword")
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        console.log("wrong pass")
         return done(null, false, { message: "Incorrect password" });
       }
       return done(null, user);
@@ -83,8 +92,8 @@ app.post("/sign-up",
 
 app.post("/sign-in",
   passport.authenticate("local", {
-    successRedirect: "/sign-in",
-    failureRedirect: "/sign-up"
+    successRedirect: "/",
+    failureRedirect: "/sign-in"
   })
 )
 
