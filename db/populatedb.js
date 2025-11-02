@@ -3,6 +3,7 @@ const { Client } = require("pg");
 require('dotenv').config();
 console.log("DB URL Check:", process.env.EXTERNAL_DB_URL);
 
+//membership_status: user/approved_user/admin
 const SQL = `
 CREATE TABLE IF NOT EXISTS Users (
 id SERIAL PRIMARY KEY,

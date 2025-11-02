@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+</head>
+
+<body>
+    <%- include("partials/navbar") %>
+        <% if (locals.user) {%>
+            <form action="/authorizationLevel" method="post">
+                <label for="authorizationCode">Submit your secret password to become an approved Member or an
+                    Admin</label>
+                <input type="text" name="authorizationCode" id="authorizationCode">
+                <button type="submit">Submit</button>
+            </form>
+            <% } else { %>
+                <div>You need to be logged in to view this page!</div>
+                <a href="/sign-in">Sign-in</a>
+                <% } %>
+</body>
+
+</html>

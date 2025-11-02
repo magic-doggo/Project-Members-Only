@@ -27,7 +27,8 @@ app.get("/log-out", (req, res, next) => {
     }
     res.redirect("/");
   })
-})
+});
+app.get("/authorizationLevel", (req, res) => res.render("authorizationLevel", { user : req.user}));
 
 passport.use(
   new LocalStrategy({
@@ -97,6 +98,7 @@ app.post("/sign-in",
   })
 )
 
+// app.post("/authorizationLevel", )
 
 app.listen(3000, (error) => {
   if (error) {
