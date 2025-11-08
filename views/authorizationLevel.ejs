@@ -14,6 +14,7 @@
                     Admin</label>
                 <input type="text" name="authorizationCode" id="authorizationCode">
                 <button type="submit">Submit</button>
+                <div>Your current user status is <b><%= user.membership_status %></b></div>
             </form>
             <% } else { %>
                 <div>You need to be logged in to view this page!</div>
