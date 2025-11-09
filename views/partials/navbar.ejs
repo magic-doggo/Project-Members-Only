@@ -3,9 +3,11 @@
         <h1>Members-only message board</h1>
         <% if (locals.user) {%>
             <div>Hello <%=locals.user.first_name %></div>
+            <a href="/">Home page</a>
             <a href="/log-out">Log out</a>
             <a href="/authorizationLevel">User Settings</a>
             <% } else { %>
+                <a href="/">Home page</a>
                 <a href="/sign-in">Sign-in</a>
                 <a href="/sign-up">Sign-up</a>
                 <% } %>
