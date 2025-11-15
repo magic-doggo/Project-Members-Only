@@ -17,7 +17,11 @@ app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/", (req, res) => res.render("index", { user: req.user }));
+app.get("/", async (req, res) => {
+  let messages = await db.getAllMessages();
+  console.log("messages", messages);
+  res.render("index", { user: req.user, messages: messages })
+});
 app.get("/sign-up", (req, res) => res.render("sign-up", { user: req.user }));
 app.get("/sign-in", (req, res) => { res.render("sign-in", { user: req.user }) })
 app.get("/log-out", (req, res, next) => {
@@ -117,6 +121,13 @@ app.post("/authorizationLevel", async (req, res, next) => {
     console.log("wrong code");
     res.redirect("/authorizationLevel");
   }
+})
+
+app.post("/newMessage", async(req,res, next) => {
+  if (!req.user) return res.status(401).redirect('sign-in');
+  console.log(req.body.title, req.body.message, req.user.id)
+  db.storeMessageInDb(req.body.title, req.body.message, req.user.id);
+  res.redirect('/');
 })
 
 app.listen(3000, (error) => {

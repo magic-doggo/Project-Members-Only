@@ -14,8 +14,7 @@
                     Admin</label>
                 <input type="text" name="authorizationCode" id="authorizationCode">
                 <button type="submit">Submit</button>
-                <div>Your current user status is <%= user.membership_status %>
-                </div>
+                <div>Your current user status is
                 <% if (locals.user.membership_status==='member' ) {%>
                     <span>Member - not yet approved</span>
                     
@@ -24,6 +23,7 @@
                 <% } else if (locals.user.membership_status==='approved_user' ) {%>
                     <span>Approved member</span>
                 <% } %>
+                </div>
             </form>
             <% } else { %>
                 <div>You need to be logged in to view this page!</div>
