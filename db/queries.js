@@ -9,7 +9,11 @@ async function storeMessageInDb(title, message, author) {
 }
 
 async function getAllMessages() {
-    const {rows} = await pool.query('SELECT * FROM messages');
+    const {rows} = await pool.query(`SELECT Messages.id, Messages.title, Messages.full_message, Messages.timestamp, Users.first_name AS author_name 
+        FROM Messages
+        Join Users
+        ON Messages.author = Users.id
+        ORDER BY Messages.timestamp DESC`);
     return rows;
 }
 

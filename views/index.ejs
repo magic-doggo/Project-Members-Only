@@ -17,24 +17,29 @@
                     <div>You are logged in, but your membership has not been approved yet. Please submit your secret
                         code to become an approved member on our <a href="/authorizationLevel">authorization page</a>
                     </div>
-                    <% } else { %>
-                        <form action="/newMessage" method="post">
-                            <label for="title">Title</label>
-                            <input type="text" id="title" name="title" required>
-                            <label for="message">Message</label>
-                            <textarea name="message" id="message" rows="5" cols="30"></textarea>
-                            <button type="submit">Submit message</button>
-                        </form>
-                        <% } %>
+                <% } else { %>
+                    <form action="/newMessage" method="post">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title" required>
+                        <label for="message">Message</label>
+                        <textarea name="message" id="message" rows="5" cols="30"></textarea>
+                        <button type="submit">Submit message</button>
+                    </form>
+            <% } %>
         </div>
         <div>
             <% for (let message of messages) { %>
                 <div><%= message.title %></div>
                 <div><%= message.full_message %></div>
+                <!-- for logged in accounts, but not with basic status, only for approved/admin users -->
+                <% if ((locals.user) && (locals.user.membership_status !=="member" )) { %> 
                 <div><%= message.timestamp %></div>
-                <div><%= message.author %></div>
+                <div><%= message.author_name %></div>
+            
+                <% } else { %>
+                <div>author and date visible to approved users only</div>
                 <% } %>
-
+            <% } %>
         </div>
 
 </body>
