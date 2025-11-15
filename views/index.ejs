@@ -39,9 +39,17 @@
                 <% } else { %>
                 <div>author and date visible to approved users only</div>
                 <% } %>
+                <% if ((locals.user) && (locals.user.membership_status ==="admin" )) { %> 
+                    <form action="/deleteMessage/<%= message.id%>" method="post">
+                        <button type="submit" class="deleteButton">Delete message</button>
+                    </form>
+                <% } %>
+
             <% } %>
         </div>
-
+    <script>
+         
+    </script>
 </body>
 
 </html>

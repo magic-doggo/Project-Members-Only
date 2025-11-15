@@ -125,10 +125,20 @@ app.post("/authorizationLevel", async (req, res, next) => {
 
 app.post("/newMessage", async(req,res, next) => {
   if (!req.user) return res.status(401).redirect('sign-in');
-  console.log(req.body.title, req.body.message, req.user.id)
+  // console.log(req.body.title, req.body.message, req.user.id)
   db.storeMessageInDb(req.body.title, req.body.message, req.user.id);
   res.redirect('/');
 })
+
+app.post("/deleteMessage/:id", async(req, res) => {
+  if (!req.user) return res.status(401).redirect('sign-in');
+  try {
+    await db.deleteMessage(req.params.id);
+    res.redirect('/')
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 app.listen(3000, (error) => {
   if (error) {

@@ -17,8 +17,13 @@ async function getAllMessages() {
     return rows;
 }
 
+async function deleteMessage(messageId) {
+    const {rows} = await pool.query('DELETE FROM Messages WHERE id = $1', [messageId]);
+}
+
 module.exports = {
     updateDBUserStatus,
     storeMessageInDb,
-    getAllMessages
+    getAllMessages,
+    deleteMessage
 }
